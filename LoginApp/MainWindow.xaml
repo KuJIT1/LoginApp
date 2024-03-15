@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LoginApp"
+        xmlns:local="clr-namespace:LoginApp" xmlns:c="clr-namespace:LoginApp.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="200" Width="300">
 
@@ -17,6 +17,25 @@
         <Style TargetType="Button">
             <Setter Property="MinWidth" Value="60" />
             <Setter Property="Margin" Value="8" />
+        </Style>
+
+        <c:User x:Key="CurrentUser"/>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+        Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -34,7 +53,15 @@
         <TextBlock Text="Пароль" Grid.Row="1" />
 
         <TextBox Text="{Binding CurrentUser.Login}" Grid.Column="1" />
-        <TextBox Text="{Binding CurrentUser.Password}" Grid.Column="1" Grid.Row="1" ToolTip="{Binding Tooltip}"/>
+        <TextBox Grid.Column="1" Grid.Row="1" ToolTip="{Binding Tooltip}" Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+             Style="{StaticResource TextBoxInError}">
+            <Binding Path="Password" Source="{StaticResource CurrentUser}"
+             UpdateSourceTrigger="PropertyChanged" >
+                <Binding.ValidationRules>
+                    <c:PasswordValidationRule/>
+                </Binding.ValidationRules>
+            </Binding>
+        </TextBox>
         <!-- Для пароля, конечно же, нужно использовать "PasswordBox", но на него не работает 
         привязка и нужен отдельный механизм для работы с такого типа полем, поэтому я оставил так -->
 

@@ -38,7 +38,7 @@ namespace LoginApp.Services
                 return false;
             }
 
-            return _passwordHasher.VerifyHashedPassword(savedUser.Password, user.Password);
+            return _passwordHasher.VerifyHashedPassword(savedUser.Password, user.Password ?? string.Empty);
         }
     }
 }

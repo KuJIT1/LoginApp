@@ -2,11 +2,13 @@
 using LoginApp.Services;
 using LoginApp.Services.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace LoginApp.ViewModels
 {
-    public class ApplicationViewModel
+    public class ApplicationViewModel  : INotifyPropertyChanged
     {
         private RelayCommand? _loginCommand;
         private RelayCommand? _logupCommand;
@@ -79,6 +81,13 @@ namespace LoginApp.ViewModels
 
                 MessageBox.Show("Всё получилось");
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
 }
